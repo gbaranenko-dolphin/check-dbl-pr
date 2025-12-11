@@ -8,21 +8,19 @@ on:
         required: false
         default: 30
         type: number
-
     secrets:
       SLACK_WEBHOOK_URL:
         required: false
-
-permissions:
-  contents: read
-  pull-requests: read
 
 jobs:
   similar-pr-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout central workflow repo
+      - name: Checkout central repo (check-dbl-pr)
         uses: actions/checkout@v4
+        with:
+          repository: gbaranenko-dolphin/check-dbl-pr
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5
