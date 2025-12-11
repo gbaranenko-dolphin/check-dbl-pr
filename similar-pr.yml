@@ -21,11 +21,3 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run similarity checker
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          python .github/scripts/check_similar_pr.py
