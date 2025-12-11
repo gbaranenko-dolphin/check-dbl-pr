@@ -1,23 +1,37 @@
-name: Detect similar PRs
 permissions:
   contents: read
   pull-requests: read
 
+name: Similar PR Check (reusable)
+
 on:
-  pull_request:
-    types: [opened, ready_for_review]
+  workflow_call:
+    inputs:
+      days_lookback:
+        description: "How many days back to look for similar PRs"
+        required: false
+        default: 30
+        type: number
+
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: false
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   similar-pr-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout central workflow repo
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install deps
         run: |
@@ -30,5 +44,6 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DAYS_LOOKBACK: ${{ inputs.days_lookback }}
         run: |
           python .github/scripts/check_similar_pr.py
